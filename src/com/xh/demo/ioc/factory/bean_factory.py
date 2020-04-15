@@ -8,8 +8,10 @@ Description:
 """
 import importlib
 import os
+from src.com.taiping.constants import cons
+from src.com.taiping.utils.log import LogUtils
 
-from src.com.xh.demo.ioc import cons
+log = LogUtils("BeanFactory").getLog()
 
 
 class BeanFactory():
@@ -21,8 +23,8 @@ class BeanFactory():
         return cls.__instance
 
     def __init__(self):
+        log.debug("BeanFactory init...")
         cur_path = os.path.abspath(os.path.dirname(__file__))
-        assert cons.PROJECT_NAME is not None, "未知的项目名称"
         self.__root_path = cur_path[:cur_path.find(cons.PROJECT_NAME) + len(cons.PROJECT_NAME)]  # 获取myProject，也就是项目的根路径
         self.__beanResource = dict()
         self.__context = dict()
@@ -41,18 +43,24 @@ class BeanFactory():
             else:
                 if ("__pycache__" not in filepath) and ("." not in filepath) and not str(index).endswith(
                         '__init__.py') and (".py" in index):
-                    self.__beanResource[index] = filepath
+                    # 把路径转换包路径形式
+                    pkg = self.__getPackage(index, filepath)
+                    self.__beanResource[pkg] = index
+                #
+            #
+        #
 
     def __init(self):
         """
         @note: 初始化
         """
         for key, value in self.__beanResource.items():
-            if str(value) == self.__root_path:
+            if str(key) == self.__root_path:
                 continue
-            pkg = self.__getPackage(key, value)
             # 绝对导入
-            importlib.import_module(pkg)
+            log.debug(key)
+            importlib.import_module(key)
+        #
 
     def __getPackage(self, key, value):
         """
@@ -63,4 +71,5 @@ class BeanFactory():
         pkg = value.replace(self.__root_path + "\\", "").replace('\\', '.')
         if not pkg.endswith('.'):
             pkg = pkg + "."
+        #
         return pkg + key.replace('.py', '')

@@ -31,12 +31,14 @@ def Service(cls):
     __registry_service().registerService(cls)
     return cls
 
+
 def ServiceName(name):
     def inner_service(cls):
         __registry_service().registerService(cls, serviceName=name)
         return cls
 
     return inner_service
+
 
 def Transaction():
     pass
