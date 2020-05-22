@@ -8,8 +8,8 @@ Description:
 """
 import time
 
-from src.com.xh.test.database import Database
-from src.com.xh.test.student import Student
+from src.com.xh.demo.db.database import Database
+from src.com.xh.demo.db.student import Student
 
 
 class AppDemo():
@@ -21,7 +21,7 @@ class AppDemo():
         stu.sex = "男"
 
         dao = Database()
-        dao.saveOrUpdate(stu)
+        dao.save(stu)
         dao.transaction()
 
         args = {}

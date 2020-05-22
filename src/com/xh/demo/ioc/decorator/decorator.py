@@ -22,23 +22,24 @@ def __registry_service():
     return __registry
 
 
-def Service(cls):
+def service(cls):
     """
-    :note: 注册类
-    :param cls:
+    注册类
+    :param cls: 当前对象
     :return:
     """
-    __registry_service().registerService(cls)
+    __registry_service().register(cls)
     return cls
 
 
-def ServiceName(name):
+def service_name(name):
+    """
+    注册类
+    :param name: 当前名称
+    :return:
+    """
     def inner_service(cls):
-        __registry_service().registerService(cls, serviceName=name)
+        __registry_service().register(cls, name=name)
         return cls
 
     return inner_service
-
-
-def Transaction():
-    pass

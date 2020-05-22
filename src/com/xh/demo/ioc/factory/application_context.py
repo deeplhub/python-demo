@@ -7,12 +7,11 @@ Description:
 @date 2020/03/12
 '''
 import inspect
-import threading
 
 from src.com.xh.demo.ioc.factory.bean_factory import BeanFactory
 from src.com.xh.demo.utils.log import LogUtils
 
-log = LogUtils("ApplicationContext").getLog()
+log = LogUtils("ApplicationContext").log()
 
 
 class ApplicationContext():
@@ -25,45 +24,51 @@ class ApplicationContext():
             cls.__instance.__registry = {}  # dict 在单例中初始化
         return cls.__instance
 
-    def initFactory(self):
-        log.debug("ApplicationContext init...")
+    def init_factory(self):
+        log.debug("ApplicationContext init_factory...")
         BeanFactory()
 
-    def registerService(self, serviceClass, serviceName=None, overwrite=False):
+    def register(self, clazz, name=None, overwrite=False):
         """
         创建服务名称
+        :param clazz: 注册类
+        :param name: 服务名
+        :param overwrite:
+        :return:
         """
-        if not serviceName:
-            serviceName = self.__makeServiceName(serviceClass.__name__)
+        if not name:
+            service_name = self.__make(clazz.__name__)
         else:
-            serviceName = self.__makeServiceName(serviceName)
+            service_name = self.__make(name)
 
         # Python assert（断言）用于判断一个表达式，在表达式条件为 false 的时候触发异常。
-        assert (overwrite or serviceName not in self.__registry or serviceClass == self.__registry[serviceName]), (
-                u"Service named %s already registered with different type" % (serviceName,))
+        assert (overwrite or service_name not in self.__registry or clazz == self.__registry[service_name]), (
+                u"Service named %s already registered with different type" % (service_name,))
 
-        log.debug("Create %s service." % serviceName)
-        self.__registry[serviceName] = serviceClass()
+        log.debug("Create %s service." % service_name)
+        self.__registry[service_name] = clazz()
 
-    def __makeServiceName(self, className):
+    def __make(self, class_name):
         """
         生成服务名
+        :param class_name: 类名称
+        :return:
         """
-        return className[:1].lower() + className[1:]
+        return class_name[:1].lower() + class_name[1:]
 
-    def getService(self, service):
+    def get(self, service):
         """
         获取服务
-        :param service:
+        :param service: 服务名称
         :return:
         """
         if inspect.isclass(service):
-            serviceName = self.__makeServiceName(service.__name__)
+            service_name = self.__make(service.__name__)
         else:
-            serviceName = self.__makeServiceName(service)
+            service_name = self.__make(service)
 
-        if serviceName not in self.__registry:
-            raise Exception('Service %s is not registered. Cannot create instance' % serviceName)
+        if service_name not in self.__registry:
+            raise Exception('Service %s is not registered. Cannot create instance' % service_name)
 
-        log.debug("get %s service." % serviceName)
-        return self.__registry[serviceName]
+        log.debug("get %s service." % service_name)
+        return self.__registry[service_name]

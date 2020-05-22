@@ -27,10 +27,10 @@ class LogUtils():
         self.__logger = logging.getLogger(loggerName)
         # 指定日志的最低输出级别，默认为warn级别
         self.__logger.setLevel(logging.DEBUG)
-        self.__consoleLog()
-        self.__fileLog()
+        self.__console_log()
+        self.__file_log()
 
-    def __consoleLog(self):
+    def __console_log(self):
         # 创建日志输出格式
         formatter = logging.Formatter(DEFAULT_FORMATTER)
         # 控制台日志
@@ -43,7 +43,7 @@ class LogUtils():
         # 指定控制台日志级别
         console_handler.setLevel(logging.DEBUG)
 
-    def __fileLog(self):
+    def __file_log(self):
         # 创建日志输出格式
         formatter = logging.Formatter(DEFAULT_FORMATTER)
         # 指定输出的文件路径
@@ -55,16 +55,16 @@ class LogUtils():
         # 指定日志文件级别
         file_handler.setLevel(logging.WARNING)
 
-    def getLog(self):
+    def log(self):
         return self.__logger
 
 
 if __name__ == '__main__':
-    log1 = LogUtils("A").getLog()
+    log1 = LogUtils("A").log()
     log1.info("AAAAAAAAAAAAAAAAAa")
 
-    log2 = LogUtils("B").getLog()
+    log2 = LogUtils("B").log()
     log2.info("BBBBBBBBBBBBBBBBB")
 
-    log3 = LogUtils("C").getLog()
+    log3 = LogUtils("C").log()
     log3.info("CCCCCCCCCCCCCCCCC")

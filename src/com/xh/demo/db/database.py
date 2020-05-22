@@ -52,7 +52,7 @@ import traceback
 from src.com.xh.demo.utils.log import LogUtils
 
 thread_local = threading.local()
-log = LogUtils("DatabaseDao").getLog()
+log = LogUtils("DatabaseDao").log()
 
 DB_MASTER_URL = "mysql+pymysql://root:admini@127.0.0.1:3306/test?charset=utf8mb4"
 
@@ -72,11 +72,11 @@ class Database():
 
     def init(self):
         """初始化方法"""
-        self.createEngine(DB_MASTER_URL, 0, 30, 30)
+        self.create_engine(DB_MASTER_URL, 0, 30, 30)
         if self.engine is not None:
             log.info("Database init OK!")
 
-    def createEngine(self, db_master_url, max_overflow, pool_size, pool_timeout, echo=False):
+    def create_engine(self, db_master_url, max_overflow, pool_size, pool_timeout, echo=False):
         """
         初始化数据库连接
         :param db_master_url: 数据库地址
@@ -94,7 +94,7 @@ class Database():
             echo=echo
         )
 
-    def createSession(self):
+    def create_session(self):
         """创建session，并绑定线程"""
         try:
             if self.engine is None:
@@ -105,9 +105,9 @@ class Database():
                 return session
 
             # 使用thread local storage技术, 使 session 线程隔离
-            SessionFactory = sessionmaker(bind=self.engine)
+            session_factory = sessionmaker(bind=self.engine)
             # 生成session实例, 单例模式, 与线程绑定
-            session = scoped_session(SessionFactory)
+            session = scoped_session(session_factory)
             thread_local.session = session
             return session
         except Exception as ex:
@@ -116,7 +116,7 @@ class Database():
         finally:
             log.debug("Create session：" + str(id(session)))
 
-    def destroySession(self):
+    def destroy(self):
         """释放连接，交还连接池"""
         if not hasattr(thread_local, "session"):
             return
@@ -140,14 +140,14 @@ class Database():
         """
         try:
             # 执行查询
-            return self.createSession().query(clazz).filter(*args).all()
+            return self.create_session().query(clazz).filter(*args).all()
         except Exception as ex:
             log.error("load 查询数据异常！")
             raise traceback.format_exc()
         finally:
-            self.destroySession()
+            self.destroy()
 
-    def getByField(self, clazz, *args):
+    def get(self, clazz, *args):
         """
         @note: 单条查询
         @param clazz: 实体类
@@ -155,43 +155,43 @@ class Database():
         @return: 返回实体
         """
         try:
-            return self.createSession().query(clazz).filter(*args).first()
+            return self.create_session().query(clazz).filter(*args).first()
         except Exception as ex:
             log.error("getByField 查询数据异常！")
             raise ex
         finally:
-            self.destroySession()
+            self.destroy()
 
-    def exists(self, clazz, *args):
-        """
-        @note: 判断数据是否存在
-        :param args:
-        :return: 返回的结果是True或False
-        """
-        try:
-            session = self.createSession()
-            return session.query(session.query(clazz).filter(*args).exists()).scalar()
-        except Exception as ex:
-            log.error(traceback.format_exc())
-            raise traceback.format_exc()
-        finally:
-            self.destroySession()
+    # def exists(self, clazz, *args):
+    #     """
+    #     @note: 判断数据是否存在
+    #     :param args:
+    #     :return: 返回的结果是True或False
+    #     """
+    #     try:
+    #         session = self.create_session()
+    #         return session.query(session.query(clazz).filter(*args).exists()).scalar()
+    #     except Exception as ex:
+    #         log.error(traceback.format_exc())
+    #         raise traceback.format_exc()
+    #     finally:
+    #         self.destroy()
+    #
+    # def existByField(self, *args):
+    #     """
+    #     @note: 判断数据是否存在
+    #     :param args:
+    #     :return: 返回的结果是True或False
+    #     """
+    #     try:
+    #         return self.create_session().query(exists().where(*args)).scalar()
+    #     except Exception as ex:
+    #         log.error(traceback.format_exc())
+    #         raise ex
+    #     finally:
+    #         self.destroy()
 
-    def existByField(self, *args):
-        """
-        @note: 判断数据是否存在
-        :param args:
-        :return: 返回的结果是True或False
-        """
-        try:
-            return self.createSession().query(exists().where(*args)).scalar()
-        except Exception as ex:
-            log.error(traceback.format_exc())
-            raise ex
-        finally:
-            self.destroySession()
-
-    def getCount(self, clazz, *args):
+    def count(self, clazz, *args):
         """
         统计数量
         :param clazz: 实体类
@@ -199,33 +199,33 @@ class Database():
         :return: 返回 int 类型
         """
         try:
-            session = self.createSession()
+            session = self.create_session()
             return session.query(clazz).filter(*args).count()
         except Exception as ex:
             log.error("getCount 统计异常")
             raise traceback.format_exc()
         finally:
-            self.destroySession()
+            self.destroy()
 
-    def saveOrUpdate(self, obj):
+    def save(self, obj):
         """
         @note: 保存或更新数据
         @param clazz: 实体类
         """
         try:
             # 保存数据
-            self.createSession().add(obj)
+            self.create_session().add(obj)
         except Exception as ex:
             log.error("保存或更新数据异常！")
             raise traceback.format_exc()
 
-    def batchSaveOrUpdate(self, objs):
+    def batch_save(self, objs):
         """
         @note: 批量保存或批量更新数据
         @param clazz: 实体类
         """
         try:
-            session = self.createSession()
+            session = self.create_session()
             if len(objs) <= 0:
                 return objs
 
@@ -241,7 +241,7 @@ class Database():
         @param args: 删除条件（dict）
         """
         try:
-            self.createSession().query(clazz).filter(*args).delete()
+            self.create_session().query(clazz).filter(*args).delete()
         except Exception as ex:
             log.error("删除数据异常！")
             raise ex
@@ -249,9 +249,9 @@ class Database():
     def transaction(self):
         """持久化"""
         try:
-            self.createSession().commit()
+            self.create_session().commit()
         except Exception as ex:
-            self.createSession().rollback()
+            self.create_session().rollback()
             raise ex
         finally:
-            self.destroySession()
+            self.destroy()

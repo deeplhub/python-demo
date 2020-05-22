@@ -23,7 +23,7 @@ class CaptchaVerifyCode():
         self.fonts = None  # 图片字体
         self.font_sizes = (20, 30)  # 图片字体大小
 
-    def createCaptchaImage(self, file_name, code):
+    def create_captcha_image(self, file_name, code):
         """
         创建验证码图片
         :param file_name:文件全名称
@@ -44,7 +44,7 @@ class CaptchaVerifyCode():
         # 展示输出结果
         # img.show()
 
-    def generateVerifyCode(self, file_path, char_count, image_suffix="png"):
+    def generate_verify_code(self, file_path, char_count, image_suffix="png"):
         """
         生成验证码图片
         :param file_path: 文件路径
@@ -61,9 +61,9 @@ class CaptchaVerifyCode():
         # 拼装文件名及文件后缀
         file_name = os.path.join(file_path, "{}.{}".format(code, image_suffix))
         # 创建图片，将字符串转换为图片
-        self.createCaptchaImage(file_name, code)
+        self.create_captcha_image(file_name, code)
 
-    def generateBatchVerifyCode(self, file_path, char_count, max_count, image_suffix="png"):
+    def generate_batch_verify_code(self, file_path, char_count, max_count, image_suffix="png"):
         """
         批量生成验证码图片
         :param file_path: 文件路径
@@ -78,12 +78,12 @@ class CaptchaVerifyCode():
             os.makedirs(file_path)
 
         for index, i in enumerate(range(max_count)):
-            self.generateVerifyCode(file_path, char_count, image_suffix)
+            self.generate_verify_code(file_path, char_count, image_suffix)
             print("Generate captcha image => {}".format(index + 1))
 
 
 if __name__ == '__main__':
     captchaCode = CaptchaVerifyCode()
     file_path = "C:/Users/Administrator/Desktop/VerifyCode/temp/"
-    captchaCode.generateVerifyCode(file_path, 6)
+    captchaCode.generate_verify_code(file_path, 6)
     # captchaCode.generateBatchVerifyCode(file_path, 4, 10)

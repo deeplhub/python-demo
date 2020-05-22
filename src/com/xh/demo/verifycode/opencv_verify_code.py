@@ -73,7 +73,7 @@ class OpencvVerifyCode():
             )
         #
 
-    def generateVerifyCode(self, file_path, img_heigth, img_width):
+    def generate_verify_code(self, file_path, img_heigth, img_width):
         # 生成一个随机矩阵，randint(low[, high, size, dtype])
         # img_rand = numpy.random.randint(
         #     numpy.random.randint(50, 100),  # 生成的数值最低要大于等于low。（hign = None时，生成的数值要在[0, low)区间内）
@@ -97,6 +97,6 @@ class OpencvVerifyCode():
 if __name__ == '__main__':
     code = OpencvVerifyCode()
     for i in range(10):
-        code.generateVerifyCode("C:/Users/Administrator/Desktop/VerifyCode/temp/", 60, 240)
+        code.generate_verify_code("C:/Users/Administrator/Desktop/VerifyCode/temp/", 60, 240)
 
     # print(code.randchar())

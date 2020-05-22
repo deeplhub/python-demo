@@ -13,7 +13,7 @@ from datetime import datetime, date
 class JsonUtils:
 
     @classmethod
-    def toJsonString(cls, obj, sort=False, sindent=4):
+    def to_json_string(cls, obj, sort=False, sindent=4):
         '''
         @note: 对象转字符串
         @param obj: 转换对象
@@ -49,7 +49,7 @@ class JsonUtils:
         return json_string
 
     @classmethod
-    def toObject(cls, obj, json_str):
+    def to_object(cls, obj, json_str):
         '''
         @note: 字符串转对象
         @param obj: 转换对象
@@ -63,5 +63,5 @@ class JsonUtils:
 if __name__ == '__main__':
     sdict = {'Name': 'Zara', 'Age': 7, 'Class': 'First'}
 
-    print(JsonUtils.toJsonString(sdict, True))
-    print(JsonUtils.toJsonString(sdict))
+    print(JsonUtils.to_json_string(sdict, True))
+    print(JsonUtils.to_json_string(sdict))

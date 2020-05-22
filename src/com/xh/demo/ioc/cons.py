@@ -7,4 +7,4 @@ Description:
 @date 2020/4/11
 """
 
-PROJECT_NAME = "product-inquire"
+PROJECT_NAME = "python-demo"

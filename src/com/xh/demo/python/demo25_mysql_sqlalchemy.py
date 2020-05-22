@@ -96,17 +96,17 @@ stu = session.query(Student).all()
 for row in stu:
     print("type(row)", type(row))
     print(row.sid, row.name)
-    jsonStr = JsonUtils.toJsonString(row)
+    jsonStr = JsonUtils.to_json_string(row)
     print("jsonStr", jsonStr)
     print("type(jsonStr)", type(jsonStr))
 
-    dict2 = JsonUtils.toObject(Student(), jsonStr)
+    dict2 = JsonUtils.to_object(Student(), jsonStr)
     print("type(dict2)", type(dict2))
     print(dict2.name)
 
 # 4.2. query one    
 row = session.query(Student).filter(Student.sid == 2).first()
-print("query one:", JsonUtils.toJsonString(row))
+print("query one:", JsonUtils.to_json_string(row))
 print("\n\n")
 
 # 4.3. update
